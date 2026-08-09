@@ -1,0 +1,1 @@
+{"grid": {"n_colors": [6, 7], "capacity": [5], "n_empty": [2], "instance_seed": [0, 1, 2, 3], "cost_model": "M1", "canon_level": "L1", "algorithm": "astar_early", "algo_param": "", "heuristic": ["h0", "h3"], "goal_test": "early"}, "limits": {"wall_s": 60, "max_generated": 5000000, "max_rss_mb": 3072}, "solvable_filter": true}

@@ -1,0 +1,14 @@
+[gate5 OK] N=4 C=4 E=2 seed=7: two runs bit-identical (cost=12, expanded=12)
+[gate5 OK] N=5 C=4 E=2 seed=3: two runs bit-identical (cost=14, expanded=50)
+[gate4 OK] N=3 C=4 E=2 mean expanded: h0=119.6 h1=48.3 h2=28.3 h3=12.2 h4=8.5; per-instance inversions 1/30
+[gate4 OK] N=4 C=3 E=2 mean expanded: h0=131.0 h1=46.9 h2=20.2 h3=12.1 h4=8.2; per-instance inversions 0/30
+[gate1+2+3 OK] N=3 C=3 E=1: 1720 A* runs (M1 EARLY x200 x5h == h*; M2 LATE x60 x6h == h*), all solutions validated, 0 reopenings; M2 EARLY suboptimal on 252/360 (max gap 1) (0s, h0 share 0s)
+[gate1+2+3 OK] N=3 C=3 E=2: 1720 A* runs (M1 EARLY x200 x5h == h*; M2 LATE x60 x6h == h*), all solutions validated, 0 reopenings; M2 EARLY suboptimal on 264/360 (max gap 1) (1s, h0 share 0s)
+[gate1+2+3 OK] N=3 C=3 E=3: 1720 A* runs (M1 EARLY x200 x5h == h*; M2 LATE x60 x6h == h*), all solutions validated, 0 reopenings; M2 EARLY suboptimal on 269/360 (max gap 1) (1s, h0 share 0s)
+[gate1+2+3 OK] N=3 C=4 E=1: 1720 A* runs (M1 EARLY x200 x5h == h*; M2 LATE x60 x6h == h*), all solutions validated, 0 reopenings; M2 EARLY suboptimal on 232/360 (max gap 2) (2s, h0 share 0s)
+[gate1+2+3 OK] N=3 C=4 E=2: 1720 A* runs (M1 EARLY x200 x5h == h*; M2 LATE x60 x6h == h*), all solutions validated, 0 reopenings; M2 EARLY suboptimal on 267/360 (max gap 2) (8s, h0 share 1s)
+[gate1+2+3 OK] N=3 C=4 E=3: 1720 A* runs (M1 EARLY x200 x5h == h*; M2 LATE x60 x6h == h*), all solutions validated, 0 reopenings; M2 EARLY suboptimal on 258/360 (max gap 2) (18s, h0 share 2s)
+[gate1+2+3 OK] N=4 C=3 E=1: 1720 A* runs (M1 EARLY x200 x5h == h*; M2 LATE x60 x6h == h*), all solutions validated, 0 reopenings; M2 EARLY suboptimal on 216/360 (max gap 1) (3s, h0 share 0s)
+[gate1+2+3 OK] N=4 C=3 E=2: 1720 A* runs (M1 EARLY x200 x5h == h*; M2 LATE x60 x6h == h*), all solutions validated, 0 reopenings; M2 EARLY suboptimal on 302/360 (max gap 1) (13s, h0 share 1s)
+
+ALL GATES PASSED in 47s
