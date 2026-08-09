@@ -1,0 +1,3 @@
+# Hot path (ballsort/) is stdlib-only, PyPy-compatible. Dev/analysis extras:
+pytest
+# analysis/ only (Milestone 5+): pandas, matplotlib

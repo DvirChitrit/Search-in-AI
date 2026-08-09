@@ -1,0 +1,160 @@
+
+=== (N=3, C=3, E=1) 1500 canonical states, 3036 edges, 1 goal state(s), 426 (28.4%) cannot reach a goal ===
+  [ok] h1 admissible under M1 (0 violations / 1074 states)
+  [ok] h1 admissible under M2 (0 violations / 1074 states)
+  [ok] h2 admissible under M1 (0 violations / 1074 states)
+  [ok] h2 admissible under M2 (0 violations / 1074 states)
+  [ok] h3 admissible under M1 (0 violations / 1074 states)
+  [ok] h3 admissible under M2 (0 violations / 1074 states)
+  [ok] h4 admissible under M1 (0 violations / 1074 states)
+  [ok] h4 admissible under M2 (0 violations / 1074 states)
+  [ok] h5 NOT claimed admissible under M1, and indeed 3+ violations exist (expected for h5/M1)
+  [ok] h5 admissible under M2 (0 violations / 1074 states)
+  [ok] h1 consistent under M1 (3036 edges checked)
+  [ok] h1 consistent under M2 (3036 edges checked)
+  [ok] h2 consistent under M1 (3036 edges checked)
+  [ok] h2 consistent under M2 (3036 edges checked)
+  [ok] h3 consistent under M1 (3036 edges checked)
+  [ok] h3 consistent under M2 (3036 edges checked)
+  [ok] h4 consistent under M1 (3036 edges checked)
+  [ok] h4 consistent under M2 (3036 edges checked)
+  [ok] h5 consistent under M2 (3036 edges checked)
+  [ok] dominance h4>=h3>=max(h1,h2): 0 violations; h4>h3 strictly on 44.4% of states, h3>max(h1,h2) on 26.2%
+  informedness mean h/h* [M1] h1: 0.760
+  informedness mean h/h* [M1] h2: 0.841
+  informedness mean h/h* [M1] h3: 0.927
+  informedness mean h/h* [M1] h4: 0.977
+  informedness mean h/h* [M2] h5: 0.705
+  [ok] L1 soundness: permutation-invariant=True, injective on classes=True
+  [ok] P1 subsumption: 30/30 P1 moves are L1 self-loops; P3: 0/0 to-empty moves (2+ empties) are duplicates of an earlier sibling
+  branching: raw 2.02, effective after L1 (distinct, non-self) 1.78
+  [ok] predecessors() inverts the forward edge relation (set of (parent,k)) on all 1500 states
+  (0.1s)
+
+=== (N=3, C=3, E=2) 2424 canonical states, 12528 edges, 1 goal state(s), 0 (0.0%) cannot reach a goal ===
+  [ok] h1 admissible under M1 (0 violations / 2424 states)
+  [ok] h1 admissible under M2 (0 violations / 2424 states)
+  [ok] h2 admissible under M1 (0 violations / 2424 states)
+  [ok] h2 admissible under M2 (0 violations / 2424 states)
+  [ok] h3 admissible under M1 (0 violations / 2424 states)
+  [ok] h3 admissible under M2 (0 violations / 2424 states)
+  [ok] h4 admissible under M1 (0 violations / 2424 states)
+  [ok] h4 admissible under M2 (0 violations / 2424 states)
+  [ok] h5 NOT claimed admissible under M1, and indeed 3+ violations exist (expected for h5/M1)
+  [ok] h5 admissible under M2 (0 violations / 2424 states)
+  [ok] h1 consistent under M1 (12528 edges checked)
+  [ok] h1 consistent under M2 (12528 edges checked)
+  [ok] h2 consistent under M1 (12528 edges checked)
+  [ok] h2 consistent under M2 (12528 edges checked)
+  [ok] h3 consistent under M1 (12528 edges checked)
+  [ok] h3 consistent under M2 (12528 edges checked)
+  [ok] h4 consistent under M1 (12528 edges checked)
+  [ok] h4 consistent under M2 (12528 edges checked)
+  [ok] h5 consistent under M2 (12528 edges checked)
+  [ok] dominance h4>=h3>=max(h1,h2): 0 violations; h4>h3 strictly on 34.7% of states, h3>max(h1,h2) on 25.4%
+  informedness mean h/h* [M1] h1: 0.667
+  informedness mean h/h* [M1] h2: 0.859
+  informedness mean h/h* [M1] h3: 0.921
+  informedness mean h/h* [M1] h4: 0.982
+  informedness mean h/h* [M2] h5: 0.660
+  [ok] L1 soundness: permutation-invariant=True, injective on classes=True
+  [ok] P1 subsumption: 1434/1434 P1 moves are L1 self-loops; P3: 944/1800 to-empty moves (2+ empties) are duplicates of an earlier sibling
+  branching: raw 5.17, effective after L1 (distinct, non-self) 3.53
+  [ok] predecessors() inverts the forward edge relation (set of (parent,k)) on all 2424 states
+  (0.5s)
+
+=== (N=3, C=3, E=3) 2742 canonical states, 25092 edges, 1 goal state(s), 0 (0.0%) cannot reach a goal ===
+  [ok] h1 admissible under M1 (0 violations / 2742 states)
+  [ok] h1 admissible under M2 (0 violations / 2742 states)
+  [ok] h2 admissible under M1 (0 violations / 2742 states)
+  [ok] h2 admissible under M2 (0 violations / 2742 states)
+  [ok] h3 admissible under M1 (0 violations / 2742 states)
+  [ok] h3 admissible under M2 (0 violations / 2742 states)
+  [ok] h4 admissible under M1 (0 violations / 2742 states)
+  [ok] h4 admissible under M2 (0 violations / 2742 states)
+  [ok] h5 NOT claimed admissible under M1, and indeed 3+ violations exist (expected for h5/M1)
+  [ok] h5 admissible under M2 (0 violations / 2742 states)
+  [ok] h1 consistent under M1 (25092 edges checked)
+  [ok] h1 consistent under M2 (25092 edges checked)
+  [ok] h2 consistent under M1 (25092 edges checked)
+  [ok] h2 consistent under M2 (25092 edges checked)
+  [ok] h3 consistent under M1 (25092 edges checked)
+  [ok] h3 consistent under M2 (25092 edges checked)
+  [ok] h4 consistent under M1 (25092 edges checked)
+  [ok] h4 consistent under M2 (25092 edges checked)
+  [ok] h5 consistent under M2 (25092 edges checked)
+  [ok] dominance h4>=h3>=max(h1,h2): 0 violations; h4>h3 strictly on 31.5% of states, h3>max(h1,h2) on 24.2%
+  informedness mean h/h* [M1] h1: 0.636
+  informedness mean h/h* [M1] h2: 0.871
+  informedness mean h/h* [M1] h3: 0.929
+  informedness mean h/h* [M1] h4: 0.984
+  informedness mean h/h* [M2] h5: 0.633
+  [ok] L1 soundness: permutation-invariant=True, injective on classes=True
+  [ok] P1 subsumption: 5250/5250 P1 moves are L1 self-loops; P3: 7151/12300 to-empty moves (2+ empties) are duplicates of an earlier sibling
+  branching: raw 9.15, effective after L1 (distinct, non-self) 4.31
+  [ok] predecessors() inverts the forward edge relation (set of (parent,k)) on all 2742 states
+  (0.8s)
+
+=== (N=3, C=4, E=1) 52161 canonical states, 112482 edges, 1 goal state(s), 18087 (34.7%) cannot reach a goal ===
+  [ok] h1 admissible under M1 (0 violations / 34074 states)
+  [ok] h1 admissible under M2 (0 violations / 34074 states)
+  [ok] h2 admissible under M1 (0 violations / 34074 states)
+  [ok] h2 admissible under M2 (0 violations / 34074 states)
+  [ok] h3 admissible under M1 (0 violations / 34074 states)
+  [ok] h3 admissible under M2 (0 violations / 34074 states)
+  [ok] h4 admissible under M1 (0 violations / 34074 states)
+  [ok] h4 admissible under M2 (0 violations / 34074 states)
+  [ok] h5 NOT claimed admissible under M1, and indeed 3+ violations exist (expected for h5/M1)
+  [ok] h5 admissible under M2 (0 violations / 34074 states)
+  [ok] h1 consistent under M1 (112482 edges checked)
+  [ok] h1 consistent under M2 (112482 edges checked)
+  [ok] h2 consistent under M1 (112482 edges checked)
+  [ok] h2 consistent under M2 (112482 edges checked)
+  [ok] h3 consistent under M1 (112482 edges checked)
+  [ok] h3 consistent under M2 (112482 edges checked)
+  [ok] h4 consistent under M1 (112482 edges checked)
+  [ok] h4 consistent under M2 (112482 edges checked)
+  [ok] h5 consistent under M2 (112482 edges checked)
+  [ok] dominance h4>=h3>=max(h1,h2): 0 violations; h4>h3 strictly on 46.0% of states, h3>max(h1,h2) on 67.9%
+  informedness mean h/h* [M1] h1: 0.819
+  informedness mean h/h* [M1] h2: 0.763
+  informedness mean h/h* [M1] h3: 0.946
+  informedness mean h/h* [M1] h4: 0.986
+  informedness mean h/h* [M2] h5: 0.669
+  [ok] L1 soundness: permutation-invariant=True, injective on classes=True
+  [ok] P1 subsumption: 114/114 P1 moves are L1 self-loops; P3: 0/0 to-empty moves (2+ empties) are duplicates of an earlier sibling
+  branching: raw 2.16, effective after L1 (distinct, non-self) 2.04
+  [ok] predecessors() inverts the forward edge relation (set of (parent,k)) on all 52161 states
+  (5.6s)
+
+=== (N=3, C=4, E=2) 105342 canonical states, 554604 edges, 1 goal state(s), 0 (0.0%) cannot reach a goal ===
+  [ok] h1 admissible under M1 (0 violations / 105342 states)
+  [ok] h1 admissible under M2 (0 violations / 105342 states)
+  [ok] h2 admissible under M1 (0 violations / 105342 states)
+  [ok] h2 admissible under M2 (0 violations / 105342 states)
+  [ok] h3 admissible under M1 (0 violations / 105342 states)
+  [ok] h3 admissible under M2 (0 violations / 105342 states)
+  [ok] h4 admissible under M1 (0 violations / 105342 states)
+  [ok] h4 admissible under M2 (0 violations / 105342 states)
+  [ok] h5 NOT claimed admissible under M1, and indeed 3+ violations exist (expected for h5/M1)
+  [ok] h5 admissible under M2 (0 violations / 105342 states)
+  [ok] h1 consistent under M1 (554604 edges checked)
+  [ok] h1 consistent under M2 (554604 edges checked)
+  [ok] h2 consistent under M1 (554604 edges checked)
+  [ok] h2 consistent under M2 (554604 edges checked)
+  [ok] h3 consistent under M1 (554604 edges checked)
+  [ok] h3 consistent under M2 (554604 edges checked)
+  [ok] h4 consistent under M1 (554604 edges checked)
+  [ok] h4 consistent under M2 (554604 edges checked)
+  [ok] h5 consistent under M2 (554604 edges checked)
+  [ok] dominance h4>=h3>=max(h1,h2): 0 violations; h4>h3 strictly on 34.8% of states, h3>max(h1,h2) on 66.2%
+  informedness mean h/h* [M1] h1: 0.737
+  informedness mean h/h* [M1] h2: 0.800
+  informedness mean h/h* [M1] h3: 0.940
+  informedness mean h/h* [M1] h4: 0.986
+  informedness mean h/h* [M2] h5: 0.715
+  [ok] L1 soundness: permutation-invariant=True, injective on classes=True
+  [ok] P1 subsumption: 31032/31032 P1 moves are L1 self-loops; P3: 17912/35352 to-empty moves (2+ empties) are duplicates of an earlier sibling
+  branching: raw 5.26, effective after L1 (distinct, non-self) 4.33
+  [ok] predecessors() inverts the forward edge relation (set of (parent,k)) on all 105342 states
+  (22.1s)

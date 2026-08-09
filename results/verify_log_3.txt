@@ -1,0 +1,32 @@
+
+=== (N=4, C=3, E=2) 207108 canonical states, 1151472 edges, 1 goal state(s), 144 (0.1%) cannot reach a goal ===
+  [ok] h1 admissible under M1 (0 violations / 206964 states)
+  [ok] h1 admissible under M2 (0 violations / 206964 states)
+  [ok] h2 admissible under M1 (0 violations / 206964 states)
+  [ok] h2 admissible under M2 (0 violations / 206964 states)
+  [ok] h3 admissible under M1 (0 violations / 206964 states)
+  [ok] h3 admissible under M2 (0 violations / 206964 states)
+  [ok] h4 admissible under M1 (0 violations / 206964 states)
+  [ok] h4 admissible under M2 (0 violations / 206964 states)
+  [ok] h5 NOT claimed admissible under M1, and indeed 3+ violations exist (expected for h5/M1)
+  [ok] h5 admissible under M2 (0 violations / 206964 states)
+  [ok] h1 consistent under M1 (1151472 edges checked)
+  [ok] h1 consistent under M2 (1151472 edges checked)
+  [ok] h2 consistent under M1 (1151472 edges checked)
+  [ok] h2 consistent under M2 (1151472 edges checked)
+  [ok] h3 consistent under M1 (1151472 edges checked)
+  [ok] h3 consistent under M2 (1151472 edges checked)
+  [ok] h4 consistent under M1 (1151472 edges checked)
+  [ok] h4 consistent under M2 (1151472 edges checked)
+  [ok] h5 consistent under M2 (1151472 edges checked)
+  [ok] dominance h4>=h3>=max(h1,h2): 0 violations; h4>h3 strictly on 53.0% of states, h3>max(h1,h2) on 30.5%
+  informedness mean h/h* [M1] h1: 0.721
+  informedness mean h/h* [M1] h2: 0.859
+  informedness mean h/h* [M1] h3: 0.911
+  informedness mean h/h* [M1] h4: 0.983
+  informedness mean h/h* [M2] h5: 0.705
+  [ok] L1 soundness: permutation-invariant=True, injective on classes=True
+  [ok] P1 subsumption: 99408/99408 P1 moves are L1 self-loops; P3: 66033/129024 to-empty moves (2+ empties) are duplicates of an earlier sibling
+  branching: raw 5.56, effective after L1 (distinct, non-self) 4.28
+  [ok] predecessors() inverts the forward edge relation (set of (parent,k)) on all 207108 states
+  (48.3s)
