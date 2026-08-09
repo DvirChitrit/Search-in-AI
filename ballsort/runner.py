@@ -140,17 +140,23 @@ def _child_run(args):
     row.update(_environment_fields())
     lim = Limits(**limits_d)
 
-    # Hard backstops around the cooperative limits.
+    # Hard backstops around the cooperative limits.  Both are Unix-only:
+    # RLIMIT_AS needs the `resource` module and SIGALRM needs Unix signals.
+    # On Windows neither exists, so the child relies on the cooperative
+    # in-search checks (Limits, checked every `check_every` expansions),
+    # which normally fire first anyway.  The pilot showed the hard caps
+    # were never the trigger, so this costs nothing in practice.
+    _have_alarm = hasattr(signal, "SIGALRM")
     if lim.max_rss_mb is not None:
-        # RLIMIT_AS is virtual memory; give 512 MB headroom over the RSS
-        # cap so the interpreter itself fits.
-        cap = int((lim.max_rss_mb + 512) * 1024 * 1024)
         try:
-            resource_mod = __import__("resource")
-            resource_mod.setrlimit(resource_mod.RLIMIT_AS, (cap, cap))
-        except (ValueError, OSError):
+            import resource as _res            # ImportError on Windows
+            # RLIMIT_AS is virtual memory; give 512 MB headroom over the
+            # RSS cap so the interpreter itself fits.
+            cap = int((lim.max_rss_mb + 512) * 1024 * 1024)
+            _res.setrlimit(_res.RLIMIT_AS, (cap, cap))
+        except (ImportError, ValueError, OSError):
             pass
-    if lim.wall_s is not None:
+    if lim.wall_s is not None and _have_alarm:
         signal.signal(signal.SIGALRM, _on_alarm)
         signal.alarm(int(math.ceil(lim.wall_s)) + 5)   # 5 s grace
 
@@ -176,7 +182,8 @@ def _child_run(args):
         alg = AStarEarly(goal_test=cfg["algorithm"].split("_")[1])
         heu = H.make(cfg["heuristic"])
         res = alg.solve(dom, s0, heu, lim)
-        signal.alarm(0)
+        if _have_alarm:
+            signal.alarm(0)
 
         row["solved"] = res.solved
         row["timeout_reason"] = res.timeout_reason
@@ -203,7 +210,8 @@ def _child_run(args):
         row["solved"] = False
         row["timeout_reason"] = f"error:{type(exc).__name__}"
     finally:
-        signal.alarm(0)
+        if _have_alarm:
+            signal.alarm(0)
     return row
 
 
@@ -284,7 +292,13 @@ def run_grid(grid: dict, csv_path: str, limits: Limits = None,
     jobs = [(c, limits_d, solvable_filter, solvable_cap) for c in todo]
     written = 0
     t0 = time.time()
-    ctx = mp.get_context("fork")
+    # `fork` is fast and Unix-only; Windows has only `spawn`.  spawn
+    # re-imports this module in each child, which is why the child entry
+    # point and the __main__ guard matter (they already exist below).
+    try:
+        ctx = mp.get_context("fork")
+    except ValueError:
+        ctx = mp.get_context("spawn")
     with ctx.Pool(processes=procs, maxtasksperchild=1) as pool:
         for row in pool.imap(_child_run, jobs, chunksize=1):
             writer.writerow({k: row.get(k) for k in CSV_COLUMNS})

@@ -53,16 +53,55 @@ Stdlib only (PyPy compatibility).
 
 from __future__ import annotations
 
-import resource
 import time
 from heapq import heappush, heappop
 
 from .base import Limits, Result, Stats
 
+# Peak-RSS measurement is platform-specific.  `resource` is Unix-only
+# (absent on Windows), so we degrade gracefully: Unix uses getrusage,
+# Windows uses the Win32 API via ctypes, and anything else reports 0.0
+# (RSS is a reported metric, never a correctness input -- the runner's
+# hard memory cap is enforced separately and also platform-guarded).
+try:
+    import resource as _resource
 
-def _rss_mb() -> float:
-    # ru_maxrss is KB on Linux (bytes on macOS; we run on Linux).
-    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0
+    def _rss_mb() -> float:
+        # ru_maxrss is KB on Linux, bytes on macOS.
+        kb = _resource.getrusage(_resource.RUSAGE_SELF).ru_maxrss
+        import sys
+        return (kb / (1024.0 * 1024.0)) if sys.platform == "darwin" else (kb / 1024.0)
+except ImportError:                                    # Windows
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        class _PMC(ctypes.Structure):
+            _fields_ = [("cb", wintypes.DWORD),
+                        ("PageFaultCount", wintypes.DWORD),
+                        ("PeakWorkingSetSize", ctypes.c_size_t),
+                        ("WorkingSetSize", ctypes.c_size_t),
+                        ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                        ("QuotaPagedPoolUsage", ctypes.c_size_t),
+                        ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                        ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+                        ("PagefileUsage", ctypes.c_size_t),
+                        ("PeakPagefileUsage", ctypes.c_size_t)]
+
+        def _rss_mb() -> float:
+            try:
+                c = _PMC()
+                c.cb = ctypes.sizeof(c)
+                h = ctypes.windll.kernel32.GetCurrentProcess()
+                if ctypes.windll.psapi.GetProcessMemoryInfo(
+                        h, ctypes.byref(c), c.cb):
+                    return c.PeakWorkingSetSize / (1024.0 * 1024.0)
+            except Exception:
+                pass
+            return 0.0
+    except Exception:
+        def _rss_mb() -> float:
+            return 0.0
 
 
 class AStarEarly:
