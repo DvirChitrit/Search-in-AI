@@ -27,12 +27,23 @@ COST MODELS (design doc 2.4)
 GOAL (G_strict, per the answer to open question 1)
     Every tube is empty, or full (height == C) and monochromatic.
 
-CANONICALIZATION (design doc 2.9)
+CANONICALIZATION (design doc 2.9) -- the full ladder, Milestone 3a
     L0: raw key  = concatenation of tubes in given order.
     L1: sort the tube-bytes lexicographically, then concatenate.
-    L2/L3 (colour relabeling) are Milestone 3; the constructor already
-    accepts them and raises NotImplementedError so adding them later is not
-    a refactor.
+    L2: L1 + colour relabeling by the partition-refinement signature;
+        colours whose signatures the refinement cannot separate keep an
+        ARBITRARY (original-id) relative order.  SAFE but INCOMPLETE.
+    L3: L2 + backtracking over the residual equal-signature colour cells,
+        taking the lexicographic minimum key over every label assignment
+        consistent with the cell structure.  SAFE and COMPLETE.
+
+    Safety of L2/L3 holds BY CONSTRUCTION, independent of how the colour
+    permutation is chosen: both levels return L1(pi(s)) for some colour
+    permutation pi, so key(s) == key(s') implies L1(pi(s)) == L1(pi'(s')),
+    i.e. pi(s) and pi'(s') are tube-permutation equivalent, hence s and s'
+    are in the same S_T x S_N orbit.  What the CHOICE of pi controls is
+    completeness (one key per orbit), which is exactly what the M3 oracle
+    gates verify empirically (scripts/run_canon_gates.py).
 
 This module is dependency-free (stdlib only) so it runs unmodified under
 PyPy.
@@ -121,9 +132,7 @@ class Domain:
             raise ValueError("bad parameters")
         if n_colors > 255:
             raise ValueError("colours must fit in a byte")
-        if canon_level in ("L2", "L3"):
-            raise NotImplementedError("L2/L3 are Milestone 3")
-        if canon_level not in ("L0", "L1"):
+        if canon_level not in ("L0", "L1", "L2", "L3"):
             raise ValueError(f"unknown canon_level {canon_level!r}")
         if cost_model not in ("M1", "M2"):
             raise ValueError(f"unknown cost_model {cost_model!r}")
@@ -324,16 +333,189 @@ class Domain:
     def key(self, s: State) -> bytes:
         """Duplicate-detection key at the configured canonicalization level.
         Safe (design doc 2.9): equal keys imply symmetric states."""
-        if self.canon_level == "L0":
+        lvl = self.canon_level
+        if lvl == "L0":
             return b"".join(s)
-        return b"".join(sorted(s))            # L1: tube order is irrelevant
+        if lvl == "L1":
+            return b"".join(sorted(s))        # L1: tube order is irrelevant
+        if lvl == "L2":
+            tbl = self._l2_table(s)
+            return b"".join(sorted(t.translate(tbl) for t in s))
+        return self._l3_key_state(s)[0]       # L3
 
     def canonical_state(self, s: State) -> State:
-        """The canonical representative itself (tubes sorted), used when we
-        want to *search over* canonical states, e.g. in the oracle."""
-        if self.canon_level == "L0":
+        """The canonical representative itself (tubes relabeled per the
+        canon level, then sorted), used when we want to *search over*
+        canonical states, e.g. in the oracle and the solvability DFS.
+        NOTE (design doc 2.8): search algorithms must NOT use this to
+        replace the states they store -- keys are canonical, stored states
+        stay concrete, so parent-pointer paths replay from the real s0."""
+        lvl = self.canon_level
+        if lvl == "L0":
             return s
-        return tuple(sorted(s))
+        if lvl == "L1":
+            return tuple(sorted(s))
+        if lvl == "L2":
+            tbl = self._l2_table(s)
+            return tuple(sorted(t.translate(tbl) for t in s))
+        return self._l3_key_state(s)[1]       # L3
+
+    # -- colour partition refinement (L2/L3 machinery, design doc 2.9) -- #
+
+    def _refine_colors(self, s: State) -> "list[tuple[int, ...]]":
+        """Partition the colours 1..N of state `s` into cells of
+        signature-indistinguishable colours, and return the cells in a
+        canonical (signature-sorted) order.
+
+        THE SIGNATURE (design doc 2.9, implemented faithfully): for each
+        colour c, the multiset over c's runs of
+            (run length, height of the run's bottom in its tube,
+             number of balls in that tube, run-is-at-tube-bottom).
+        These facts are LABEL-FREE (they never mention which colour a
+        neighbouring ball has) and TUBE-ORDER-FREE (a multiset over runs),
+        so the base signature is invariant under S_T and *equivariant*
+        under S_N: relabeling colours permutes the signatures along with
+        the colours but never changes any signature's value.  That
+        equivariance is what makes the induced partition an orbit
+        invariant -- the load-bearing fact for L3's completeness.
+
+        THE REFINEMENT LOOP: colours with equal base signatures may still
+        be structurally different through their CONTEXT -- which kinds of
+        colours sit directly below/above their runs.  So we iterate:
+        extend every run tuple with the current cell ids of the colours
+        immediately below and above the run (sentinel -1 when the run
+        touches the tube bottom / is topmost), prepend the colour's own
+        current cell id, and re-partition on the extended signatures.
+        Because each new signature contains the old cell id, every round
+        REFINES the previous partition (cells only split, never merge),
+        so the loop reaches a fixed point in at most N rounds; we stop
+        when a round no longer increases the number of cells (equal count
+        + refinement ==> identical partition).  Cell ids are always
+        assigned by sorting signature values, so they too are orbit
+        invariants, and feeding them back keeps the whole loop
+        equivariant.
+        """
+        N = self.N
+        # 1. Collect every run of every colour with its structural facts.
+        #    runs[c] = list of (run_len, bottom_h, tube_balls, at_bottom,
+        #                       colour_below, colour_above)
+        runs = {c: [] for c in range(1, N + 1)}
+        for t in s:
+            h = tube_height(t)
+            i = 0
+            while i < h:
+                x = t[i]
+                j = i
+                while j < h and t[j] == x:
+                    j += 1
+                below = t[i - 1] if i > 0 else 0
+                above = t[j] if j < h else 0
+                runs[x].append((j - i, i, h, i == 0, below, above))
+                i = j
+        # 2. Initial partition from the label-free base signature.
+        base = {c: tuple(sorted((rl, bh, th, ab)
+                                for rl, bh, th, ab, _lo, _hi in rs))
+                for c, rs in runs.items()}
+        rank = {v: i for i, v in enumerate(sorted(set(base.values())))}
+        cell_of = {c: rank[base[c]] for c in runs}
+        n_cells = len(rank)
+        # 3. Refine to a fixed point.
+        while n_cells < N:
+            sig = {}
+            for c, rs in runs.items():
+                ext = tuple(sorted(
+                    (rl, bh, th, ab,
+                     cell_of[lo] if lo else -1,
+                     cell_of[hi] if hi else -1)
+                    for rl, bh, th, ab, lo, hi in rs))
+                sig[c] = (cell_of[c], ext)
+            rank = {v: i for i, v in enumerate(sorted(set(sig.values())))}
+            new_cell = {c: rank[sig[c]] for c in sig}
+            if len(rank) == n_cells:
+                cell_of = new_cell      # same partition, canonical ranks
+                break
+            cell_of, n_cells = new_cell, len(rank)
+        # 4. Cells in canonical (rank) order; colours inside a cell sorted
+        #    by original id purely for determinism of iteration.
+        cells: "dict[int, list[int]]" = {}
+        for c, r in cell_of.items():
+            cells.setdefault(r, []).append(c)
+        return [tuple(sorted(cells[r])) for r in sorted(cells)]
+
+    def _l2_table(self, s: State) -> bytes:
+        """The L2 relabeling table: cells receive consecutive label blocks
+        in canonical cell order; INSIDE a cell, colours keep their original
+        relative order.  That within-cell tie-break is deliberate and is
+        exactly where L2's incompleteness lives: original colour ids are
+        NOT an orbit invariant, so two orbit-equivalent states whose
+        refinement leaves a multi-colour cell can land on different keys.
+        (Never on the same key for different orbits -- see the safety
+        argument in the module docstring.)  Byte 0 (padding) and bytes
+        above N map to themselves."""
+        cells = self._refine_colors(s)
+        tbl = bytearray(range(256))
+        nxt = 1
+        for cell in cells:
+            for c in cell:                   # ascending original id
+                tbl[c] = nxt
+                nxt += 1
+        return bytes(tbl)
+
+    def _l3_key_state(self, s: State) -> "tuple[bytes, State]":
+        """L3 = L2 + backtracking over the residual cells: try EVERY label
+        assignment consistent with the cell structure (each cell keeps its
+        canonical label block; the |cell|! orders within each block are
+        enumerated) and return the lexicographically minimum
+        (key, relabeled-sorted-state) pair.
+
+        Why this is COMPLETE (one key per orbit): if s' = rho(tau(s)) for
+        a colour permutation rho and tube permutation tau, equivariance of
+        the refinement gives that s' has the same cells with the same
+        signatures, with colour memberships mapped through rho.  Hence the
+        set of candidate relabeled states of s' is exactly the tau-image
+        of the candidate set of s, and tube-sorting (L1) erases tau -- so
+        both states minimise over the SAME set of byte strings and get the
+        same key.  (The oracle gate checks this exhaustively rather than
+        trusting the argument: |distinct L3 keys| == |orbits|.)
+
+        Cost: factorial in the largest residual cell, which the refinement
+        keeps at 1-2 colours in practice (design doc 2.9); the all-
+        singleton fast path below is the common case and costs the same
+        as L2."""
+        cells = self._refine_colors(s)
+        # Fast path: refinement separated every colour -> L3 == L2.
+        if all(len(cell) == 1 for cell in cells):
+            tbl = bytearray(range(256))
+            nxt = 1
+            for cell in cells:
+                tbl[cell[0]] = nxt
+                nxt += 1
+            tb = bytes(tbl)
+            tubes = sorted(t.translate(tb) for t in s)
+            return b"".join(tubes), tuple(tubes)
+        # General path: enumerate within-cell orders (product over cells).
+        from itertools import permutations, product
+        starts = []
+        nxt = 1
+        perm_lists = []
+        for cell in cells:
+            starts.append(nxt)
+            nxt += len(cell)
+            perm_lists.append(list(permutations(cell)) if len(cell) > 1
+                              else [cell])
+        best_key = None
+        best_tubes = None
+        for combo in product(*perm_lists):
+            tbl = bytearray(range(256))
+            for cell_perm, st in zip(combo, starts):
+                for off, c in enumerate(cell_perm):
+                    tbl[c] = st + off
+            tb = bytes(tbl)
+            tubes = sorted(t.translate(tb) for t in s)
+            k = b"".join(tubes)
+            if best_key is None or k < best_key:
+                best_key, best_tubes = k, tubes
+        return best_key, tuple(best_tubes)
 
     # ------------------------------------------------------------------ #
     # Dead-end detection                                                 #

@@ -1,0 +1,14 @@
+[canon gates OK] N=3 C=3 E=1: L0=33600 L1=1500 L2=261 L3=257 orbits=257 | safe(a) complete(b) ladder(c) h-inv(d) h*-inv(e) on all 1500 states; (f) 1000 A* runs == h*, all paths validated (1s)
+[canon gates OK] N=3 C=3 E=2: L0=226800 L1=2424 L2=423 L3=419 orbits=419 | safe(a) complete(b) ladder(c) h-inv(d) h*-inv(e) on all 2424 states; (f) 1000 A* runs == h*, all paths validated (2s)
+[canon gates OK] N=3 C=3 E=3: L0=974400 L1=2742 L2=479 L3=474 orbits=474 | safe(a) complete(b) ladder(c) h-inv(d) h*-inv(e) on all 2742 states; (f) 1000 A* runs == h*, all paths validated (4s)
+[canon gates OK] N=3 C=4 E=1: L0=1212750 L1=52161 L2=8772 L3=8759 orbits=8759 | safe(a) complete(b) ladder(c) h-inv(d) h*-inv(e) on all 52161 states; (f) 1000 A* runs == h*, all paths validated (8s)
+
+ALL CANON GATES PASSED in 15s; ladder table -> results/canon_ladder.csv
+[canon gates OK] N=3 C=4 E=2: L0=11088000 L1=105342 L2=17661 L3=17648 orbits=17648 | safe(a) complete(b) ladder(c) h-inv(d) h*-inv(e) on all 105342 states; (f) 1000 A* runs == h*, all paths validated (25s)
+[canon gates OK] N=3 C=4 E=3: L0=60672150 L1=133968 L2=22490 L3=22471 orbits=22471 | safe(a) complete(b) ladder(c) h-inv(d) h*-inv(e) on all 133968 states; (f) 1000 A* runs == h*, all paths validated (43s)
+
+ALL CANON GATES PASSED in 68s; ladder table -> results/canon_ladder.csv
+[canon gates OK] N=4 C=3 E=1: L0=12936000 L1=113616 L2=4968 L3=4818 orbits=4818 | safe(a) complete(b) ladder(c) h-inv(d) h*-inv(e) on all 113616 states; (f) 1000 A* runs == h*, all paths validated (31s)
+[canon gates OK] N=4 C=3 E=2: L0=124185600 L1=207108 L2=9020 L3=8806 orbits=8806 | safe(a) complete(b) ladder(c) h-inv(d) h*-inv(e) on all 207108 states; (f) 1000 A* runs == h*, all paths validated (64s)
+
+ALL CANON GATES PASSED in 98s; ladder table -> results/canon_ladder.csv

@@ -112,8 +112,22 @@ def test_key_levels_and_invariance():
     assert dom1.key(s) == dom1.key(perm)
     if perm != s:
         assert dom0.key(s) != dom0.key(perm)
-    with pytest.raises(NotImplementedError):
-        D(canon_level="L2")
+    # Milestone 3a: L2/L3 exist now.  L3 keys must be invariant under
+    # tube permutation AND colour relabeling; L2 at least under tube
+    # permutation (full soundness is the oracle gate's job).
+    dom2 = D(canon_level="L2")
+    dom3 = D(canon_level="L3")
+    assert dom2.key(perm) == dom2.key(s)
+    assert dom3.key(perm) == dom3.key(s)
+    n = dom3.N
+    relabel = bytes(range(256)).replace(
+        bytes(range(1, n + 1)), bytes(range(n, 0, -1)))  # reverse colours
+    flipped = tuple(t.translate(relabel) for t in perm)
+    assert dom3.key(flipped) == dom3.key(s)
+    cs = dom3.canonical_state(s)
+    assert dom3.key(cs) == dom3.key(s) and b"".join(cs) == dom3.key(s)
+    with pytest.raises(ValueError):
+        D(canon_level="L9")
 
 
 # ---------------------------------------------------------------- dead end
