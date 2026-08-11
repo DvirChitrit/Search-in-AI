@@ -1,3 +1,4 @@
-# Hot path (ballsort/) is stdlib-only, PyPy-compatible. Dev/analysis extras:
+# Hot path (ballsort/) is stdlib-only, PyPy-compatible.
 pytest
-# analysis/ only (Milestone 5+): pandas, matplotlib
+# analysis/ layer only (never imported by ballsort/):
+matplotlib
